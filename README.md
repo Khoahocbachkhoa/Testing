@@ -1,2 +1,3 @@
-# QLCV-GO
- Hệ thống quản lý dự án/công việc, tạo task, phân công, theo dõi tiến độ. (Mục đích học tập và thử nghiệm)
+# TESTING-GO
+Mục đích học tập và nghiên cứu
+Cố gắng xong trước tháng 12 năm 2026
