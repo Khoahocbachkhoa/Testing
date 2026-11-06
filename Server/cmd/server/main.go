@@ -9,6 +9,7 @@ import (
 	"server/internal/repository"
 	"server/internal/service"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,6 +21,15 @@ func main() {
 	defer db.CloseDB()
 
 	r := gin.Default()
+
+	// !! Cấu hình CORS phục vị mục đích thử nghiệm
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:5173", "http://localhost:8080"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+		AllowCredentials: true,
+	}))
+
 	userRepository := repository.NewUserRepository(db.Pool)
 	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
@@ -45,7 +55,7 @@ func main() {
 	auth.POST("/register", userHandler.Register)
 	auth.POST("/login", userHandler.Login)
 
-	if err := r.Run(":8080"); err != nil {
+	if err := r.Run("localhost:8080"); err != nil {
 		log.Fatal("Cannot start server: ", err)
 	}
 }
