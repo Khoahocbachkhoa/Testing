@@ -10,6 +10,7 @@ import (
 var Pool *pgxpool.Pool
 
 func ConnectDatabase(dbURL string) {
+	// Example Url
 	// dbURL := "postgres://postgres:khoa2005@localhost:5432/app?sslmode=disable"
 
 	ctx := context.Background()

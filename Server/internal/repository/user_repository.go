@@ -28,12 +28,12 @@ func NewUserRepository(pool *pgxpool.Pool) UserRepository {
 // Create a new user when register
 func (r *userRepository) Create(ctx context.Context, user *model.User) error {
 	query := `
-		insert into users(username, password_raw, fullname)
+		insert into users(username, password_hash, fullname)
 		values ($1, $2, $3)
 		returning id
 	`
 
-	err := r.pool.QueryRow(ctx, query, user.Username, user.Password, user.Fullname).Scan(&user.ID)
+	err := r.pool.QueryRow(ctx, query, user.Username, user.PasswordHash, user.Fullname).Scan(&user.ID)
 	if err != nil {
 		var pgErr *pgconn.PgError
 		// 23505 : đã có username rồi
@@ -48,7 +48,7 @@ func (r *userRepository) Create(ctx context.Context, user *model.User) error {
 
 func (r *userRepository) FindByUsername(ctx context.Context, username string) (*model.User, error) {
 	query := `
-		select id, username, password_raw, fullname
+		select id, username, password_hash, fullname
 		from users
 		where username = $1
 	`
@@ -57,7 +57,7 @@ func (r *userRepository) FindByUsername(ctx context.Context, username string) (*
 	err := r.pool.QueryRow(ctx, query, username).Scan(
 		&user.ID,
 		&user.Username,
-		&user.Password,
+		&user.PasswordHash,
 		&user.Fullname,
 	)
 

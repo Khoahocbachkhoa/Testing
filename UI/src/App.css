@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root {
   font-family: 'DM Sans', sans-serif;
@@ -238,7 +238,6 @@ button { cursor: pointer; }
   .topbar { padding-inline: 11px; }.page-grid { padding-inline: 9px; }.page-heading h1 { font-size: 20px; }.heading-button { padding-inline: 6px; }.heading-button svg { display: none; }.feed-notice { align-items: flex-start; }.composer__submit { gap: 4px; }.privacy-pill { padding-inline: 6px; }.post-head__name { font-size: 10px; }
 }
 
-/* Authentication pages */
 .auth-page { position: relative; min-height: 100vh; display: grid; place-items: center; overflow: hidden; padding: 38px; background: radial-gradient(ellipse at 88% 9%, #e0eeff 0, transparent 29%), radial-gradient(ellipse at 7% 94%, #e7f0ff 0, transparent 28%), #f5f8fc; }
 .auth-orb { position: absolute; z-index: 0; border: 1px solid #dbe8f8; border-radius: 50%; pointer-events: none; }
 .auth-orb--one { width: 430px; height: 430px; top: -260px; right: 7%; }
@@ -333,4 +332,4 @@ button { cursor: pointer; }
   .auth-main { min-height: calc(100svh - 18px); padding-inline: 21px; }
   .auth-mobile-brand { margin-bottom: 28px; }
   .auth-card__intro { margin-bottom: 21px; }
-}
+} */

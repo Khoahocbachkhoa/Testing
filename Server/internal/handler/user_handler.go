@@ -28,26 +28,25 @@ func (h *UserHandler) Register(c *gin.Context) {
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body"})
+		writeError(c, http.StatusBadRequest, "invalid request body")
 		return
 	}
 
 	user := &model.User{
 		Username: req.Username,
-		Password: req.Password,
 		Fullname: req.Fullname,
 	}
-	err := h.userService.Register(c.Request.Context(), user)
+	err := h.userService.Register(c.Request.Context(), user, req.Password)
 	if err != nil {
 		// defined error
 		if appErr, ok := errors.AsType[*apperror.AppError](err); ok {
-			c.JSON(appErr.Code, gin.H{"error": appErr.Message})
+			writeError(c, appErr.Code, appErr.Message)
 			return
 		}
 
 		// else it's internal error
 		log.Printf("Register: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
+		writeError(c, http.StatusInternalServerError, "internal server error")
 		return
 	}
 
@@ -64,7 +63,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body"})
+		writeError(c, http.StatusBadRequest, "invalid request body")
 		return
 	}
 
@@ -72,12 +71,12 @@ func (h *UserHandler) Login(c *gin.Context) {
 	if err != nil {
 		// defined error
 		if appErr, ok := errors.AsType[*apperror.AppError](err); ok {
-			c.JSON(appErr.Code, gin.H{"error": appErr.Message})
+			writeError(c, appErr.Code, appErr.Message)
 			return
 		}
 
 		log.Printf("Login: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
+		writeError(c, http.StatusInternalServerError, "internal server error")
 		return
 	}
 
@@ -85,4 +84,9 @@ func (h *UserHandler) Login(c *gin.Context) {
 		"message": "login successfully",
 		"user":    user,
 	})
+}
+
+func writeError(c *gin.Context, status int, message string) {
+	// Keep "error" for existing API clients and "message" for the current UI.
+	c.JSON(status, gin.H{"error": message, "message": message})
 }
