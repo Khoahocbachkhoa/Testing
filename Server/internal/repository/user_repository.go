@@ -36,7 +36,7 @@ func (r *userRepository) Create(ctx context.Context, user *model.User) error {
 	err := r.pool.QueryRow(ctx, query, user.Username, user.PasswordHash, user.Fullname).Scan(&user.ID)
 	if err != nil {
 		var pgErr *pgconn.PgError
-		// 23505 : đã có username rồi
+		// 23505 : username already exist
 		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
 			return apperror.ErrUsernameAlreadyExists
 		}

@@ -14,6 +14,7 @@ import (
 )
 
 func main() {
+	// todo: .env
 	dbURL := "postgres://postgres:khoa2005@localhost:5432/app?sslmode=disable"
 
 	ctx := context.Background()
@@ -22,7 +23,7 @@ func main() {
 
 	r := gin.Default()
 
-	// !! Cấu hình CORS phục vị mục đích thử nghiệm
+	// ! CORS
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:5173", "http://localhost:8080"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},

@@ -24,7 +24,7 @@ export default function Login() {
       // testing only
       localStorage.setItem("isLoggedIn", "true");
 
-      navigate('/diary');
+      navigate('/notes');
     } catch (err) {
       toast.error(err.response?.data?.message || "Đăng nhập thất bại!");
       setError(err.response?.data?.message || "Đăng nhập thất bại! Vui lòng thử lại!");

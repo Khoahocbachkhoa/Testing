@@ -1,10 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import DiaryPage from "./pages/DiaryPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Notes from "./pages/Notes";
 import PrivateRoute from "./components/PrivateRoute";
 import { Toaster } from "react-hot-toast";
-import "./App.css";
 
 export default function App() {
   return (
@@ -16,10 +15,10 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route
-            path="/diary"
+            path="/notes"
             element={
               <PrivateRoute>
-                <DiaryPage />
+                <Notes />
               </PrivateRoute>
             }
           />
