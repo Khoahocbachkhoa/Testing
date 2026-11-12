@@ -1,4 +1,3 @@
-
 import { useMemo, useState } from "react";
 import "./Notes.css";
 
@@ -55,9 +54,7 @@ export default function Notes() {
   const [search, setSearch] = useState("");
   const [saved, setSaved] = useState(true);
 
-  const selectedEntry = entries.find(
-    (entry) => entry.id === selectedId
-  );
+  const selectedEntry = entries.find((entry) => entry.id === selectedId);
 
   const filteredEntries = useMemo(() => {
     const keyword = search.toLowerCase();
@@ -66,11 +63,9 @@ export default function Notes() {
       .filter(
         (entry) =>
           entry.title.toLowerCase().includes(keyword) ||
-          entry.content.toLowerCase().includes(keyword)
+          entry.content.toLowerCase().includes(keyword),
       )
-      .sort((a, b) =>
-        b.entry_date.localeCompare(a.entry_date)
-      );
+      .sort((a, b) => b.entry_date.localeCompare(a.entry_date));
   }, [entries, search]);
 
   function updateEntry(field, value) {
@@ -82,8 +77,8 @@ export default function Notes() {
               [field]: value,
               updated_at: new Date().toISOString(),
             }
-          : entry
-      )
+          : entry,
+      ),
     );
 
     setSaved(false);
@@ -175,9 +170,7 @@ export default function Notes() {
                   {formatShortDate(entry.entry_date)}
                 </span>
 
-                <span className="entry-title">
-                  {entry.title || "Untitled"}
-                </span>
+                <span className="entry-title">{entry.title || "Untitled"}</span>
 
                 <span className="entry-preview">
                   {entry.content || "No content yet..."}
@@ -186,15 +179,11 @@ export default function Notes() {
             ))}
 
             {filteredEntries.length === 0 && (
-              <div className="empty-search">
-                No entries found.
-              </div>
+              <div className="empty-search">No entries found.</div>
             )}
           </div>
 
-          <div className="sidebar-footer">
-            PERSONAL JOURNAL
-          </div>
+          <div className="sidebar-footer">PERSONAL JOURNAL</div>
         </aside>
 
         <section className="editor">
@@ -210,9 +199,7 @@ export default function Notes() {
                   className="date-input"
                   type="date"
                   value={selectedEntry.entry_date}
-                  onChange={(e) =>
-                    updateEntry("entry_date", e.target.value)
-                  }
+                  onChange={(e) => updateEntry("entry_date", e.target.value)}
                 />
 
                 <input
@@ -221,9 +208,7 @@ export default function Notes() {
                   maxLength={200}
                   placeholder="Untitled entry"
                   value={selectedEntry.title}
-                  onChange={(e) =>
-                    updateEntry("title", e.target.value)
-                  }
+                  onChange={(e) => updateEntry("title", e.target.value)}
                 />
 
                 <div className="title-divider" />
@@ -232,23 +217,20 @@ export default function Notes() {
                   className="content-input"
                   placeholder="Start writing..."
                   value={selectedEntry.content}
-                  onChange={(e) =>
-                    updateEntry("content", e.target.value)
-                  }
+                  onChange={(e) => updateEntry("content", e.target.value)}
                 />
 
                 <div className="editor-footer">
-                  <span>
-                    {selectedEntry.content.length} characters
-                  </span>
+                  <span>{selectedEntry.content.length} characters</span>
                   <span>
                     LAST EDITED{" "}
-                    {new Date(
-                      selectedEntry.updated_at
-                    ).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    {new Date(selectedEntry.updated_at).toLocaleTimeString(
+                      "en-US",
+                      {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      },
+                    )}
                   </span>
                 </div>
               </div>
@@ -257,9 +239,7 @@ export default function Notes() {
             <div className="empty-editor">
               <h2>No entry selected</h2>
               <p>Create a new entry to start writing.</p>
-              <button onClick={createEntry}>
-                Create entry
-              </button>
+              <button onClick={createEntry}>Create entry</button>
             </div>
           )}
         </section>

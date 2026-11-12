@@ -35,6 +35,10 @@ func main() {
 	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
 
+	diaryRepository := repository.NewDiaryRepository(db.Pool)
+	diaryService := service.NewDiaryService(diaryRepository)
+	diaryHandler := handler.NewDiaryHandler(diaryService)
+
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "Hello, Gin!"})
 	})
@@ -55,6 +59,12 @@ func main() {
 	auth := r.Group("/api/auth")
 	auth.POST("/register", userHandler.Register)
 	auth.POST("/login", userHandler.Login)
+
+	diaryEntries := r.Group("/api/diary-entries")
+	diaryEntries.POST("", diaryHandler.CreateEntry)
+	diaryEntries.GET("", diaryHandler.GetEntries)
+	diaryEntries.PUT("/:id", diaryHandler.UpdateEntry)
+	diaryEntries.DELETE("/:id", diaryHandler.DeleteEntry)
 
 	if err := r.Run("localhost:8080"); err != nil {
 		log.Fatal("Cannot start server: ", err)
