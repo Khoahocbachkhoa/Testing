@@ -71,6 +71,32 @@ button {
   gap: 20px;
 }
 
+.account-name {
+  max-width: 130px;
+  overflow: hidden;
+  color: #555;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logout-button,
+.delete-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  color: #777;
+  font-size: 11px;
+}
+
+.logout-button:hover,
+.delete-button:hover:not(:disabled) {
+  color: #222;
+}
+
 .status {
   font-size: 11px;
   color: #888;
@@ -194,6 +220,24 @@ button {
   padding: 0 10px;
 }
 
+.list-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 8px;
+  color: #888;
+  font-size: 11px;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .entry-item {
   width: 100%;
   padding: 13px 12px;
@@ -283,6 +327,21 @@ button {
   color: #aaa;
 }
 
+.editor-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.delete-button {
+  color: #999;
+}
+
+.delete-button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
 .editor-content {
   width: 100%;
   max-width: 850px;
@@ -302,6 +361,12 @@ button {
   color: #888;
   font-size: 11px;
   margin-bottom: 25px;
+}
+
+.date-caption {
+  margin: -18px 0 24px;
+  color: #aaa;
+  font-size: 11px;
 }
 
 .title-input {
@@ -383,11 +448,30 @@ button {
   font-size: 11px;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
 /* Responsive */
 
 @media (max-width: 650px) {
   .topbar {
     padding: 0 14px;
+    gap: 10px;
+  }
+
+  .topbar-right {
+    gap: 10px;
+  }
+
+  .account-name {
+    display: none;
   }
 
   .sidebar {
@@ -428,6 +512,14 @@ button {
   }
 
   .status {
+    display: none;
+  }
+
+  .save-button {
+    padding: 8px;
+  }
+
+  .delete-button span {
     display: none;
   }
 }

@@ -1,10 +1,8 @@
 import { Navigate } from "react-router-dom";
 
 const PrivateRoute = ({ children }) => {
-  // note: ban đầu đơn giản chưa có token
-  const token = localStorage.getItem("isLoggedIn");
-  
-  // require login
+  const token = localStorage.getItem("accessToken");
+
   return token ? children : <Navigate to="/login" replace />;
 };
 
