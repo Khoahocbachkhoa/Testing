@@ -10,6 +10,7 @@ import (
 	"unicode/utf8"
 
 	"server/internal/apperror"
+	"server/internal/auth"
 	"server/internal/model"
 	"server/internal/service"
 
@@ -33,7 +34,6 @@ func NewDiaryHandler(diaryService service.DiaryService) DiaryHandler {
 }
 
 type diaryEntryRequest struct {
-	UserID    int    `json:"user_id"`
 	Title     string `json:"title"`
 	Content   string `json:"content"`
 	EntryDate string `json:"entry_date"`
@@ -55,10 +55,6 @@ func (h *DiaryHandler) CreateEntry(c *gin.Context) {
 		writeError(c, http.StatusBadRequest, "invalid request body")
 		return
 	}
-	if req.UserID <= 0 {
-		writeError(c, http.StatusBadRequest, "user_id must be a positive integer")
-		return
-	}
 	if strings.TrimSpace(req.Content) == "" {
 		writeError(c, http.StatusBadRequest, "content cannot be empty")
 		return
@@ -75,7 +71,7 @@ func (h *DiaryHandler) CreateEntry(c *gin.Context) {
 	}
 
 	entry := &model.DiaryEntry{
-		UserID:    req.UserID,
+		UserID:    auth.UserID(c),
 		Title:     req.Title,
 		Content:   req.Content,
 		EntryDate: entryDate,
@@ -92,11 +88,7 @@ func (h *DiaryHandler) CreateEntry(c *gin.Context) {
 }
 
 func (h *DiaryHandler) GetEntries(c *gin.Context) {
-	userID, err := strconv.Atoi(c.Query("user_id"))
-	if err != nil || userID <= 0 {
-		writeError(c, http.StatusBadRequest, "user_id must be a positive integer")
-		return
-	}
+	userID := auth.UserID(c)
 
 	page, err := queryInt(c, "page", defaultDiaryPage)
 	if err != nil || page < 1 {
@@ -143,10 +135,6 @@ func (h *DiaryHandler) UpdateEntry(c *gin.Context) {
 		writeError(c, http.StatusBadRequest, "invalid request body")
 		return
 	}
-	if req.UserID <= 0 {
-		writeError(c, http.StatusBadRequest, "user_id must be a positive integer")
-		return
-	}
 	if strings.TrimSpace(req.Content) == "" {
 		writeError(c, http.StatusBadRequest, "content cannot be empty")
 		return
@@ -167,7 +155,7 @@ func (h *DiaryHandler) UpdateEntry(c *gin.Context) {
 
 	entry := &model.DiaryEntry{
 		ID:        entryID,
-		UserID:    req.UserID,
+		UserID:    auth.UserID(c),
 		Title:     req.Title,
 		Content:   req.Content,
 		EntryDate: entryDate,
@@ -189,11 +177,7 @@ func (h *DiaryHandler) DeleteEntry(c *gin.Context) {
 		writeError(c, http.StatusBadRequest, "id must be a positive integer")
 		return
 	}
-	userID, err := strconv.Atoi(c.Query("user_id"))
-	if err != nil || userID <= 0 {
-		writeError(c, http.StatusBadRequest, "user_id must be a positive integer")
-		return
-	}
+	userID := auth.UserID(c)
 
 	if err := h.diaryService.DeleteEntry(c.Request.Context(), entryID, userID); err != nil {
 		writeDiaryError(c, "DeleteEntry", err)

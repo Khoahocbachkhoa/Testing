@@ -31,7 +31,7 @@ func (s *userService) Register(ctx context.Context, user *model.User, password s
 	user.Fullname = strings.TrimSpace(user.Fullname)
 
 	if user.Username == "" || utf8.RuneCountInString(user.Username) > 100 ||
-		utf8.RuneCountInString(user.Fullname) > 100 || password == "" || len(password) > 72 {
+		utf8.RuneCountInString(user.Fullname) > 100 || len(password) < 8 || len(password) > 72 {
 		return apperror.ErrInvalidUserData
 	}
 

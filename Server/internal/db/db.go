@@ -2,36 +2,63 @@ package db
 
 import (
 	"context"
-	"log"
+	"embed"
+	"fmt"
+	"strings"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+//go:embed database_schema.sql
+var schema embed.FS
+
 var Pool *pgxpool.Pool
 
-func ConnectDatabase(dbURL string) {
-	// Example Url
-	// dbURL := "postgres://postgres:khoa2005@localhost:5432/app?sslmode=disable"
-
-	ctx := context.Background()
+func ConnectDatabase(dbURL string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	var err error
 	Pool, err = pgxpool.New(ctx, dbURL)
 	if err != nil {
-		log.Fatal("Cannot create connection pool: ", err)
+		return fmt.Errorf("create database connection pool: %w", err)
 	}
 
-	// test connect
 	if err := Pool.Ping(ctx); err != nil {
-		log.Fatal("Cannot connect to database: ", err)
+		Pool.Close()
+		Pool = nil
+		return fmt.Errorf("connect to database: %w", err)
 	}
 
-	log.Println("Database connection successful")
+	if err := ensureSchema(ctx); err != nil {
+		Pool.Close()
+		Pool = nil
+		return err
+	}
+	return nil
+}
+
+func ensureSchema(ctx context.Context) error {
+	contents, err := schema.ReadFile("database_schema.sql")
+	if err != nil {
+		return fmt.Errorf("read database schema: %w", err)
+	}
+	for _, statement := range strings.Split(string(contents), ";") {
+		statement = strings.TrimSpace(statement)
+		if statement == "" {
+			continue
+		}
+		if _, err := Pool.Exec(ctx, statement); err != nil {
+			return fmt.Errorf("initialize database schema: %w", err)
+		}
+	}
+	return nil
 }
 
 func CloseDB() {
 	if Pool != nil {
 		Pool.Close()
-		log.Println("Disconnected from the database!")
+		Pool = nil
 	}
 }

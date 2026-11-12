@@ -5,18 +5,21 @@ import (
 	"log"
 	"net/http"
 	"server/internal/apperror"
+	"server/internal/auth"
 	"server/internal/model"
 	"server/internal/service"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 type UserHandler struct {
 	userService service.UserService
+	tokenSecret []byte
 }
 
-func NewUserHandler(userService service.UserService) UserHandler {
-	return UserHandler{userService: userService}
+func NewUserHandler(userService service.UserService, tokenSecret []byte) UserHandler {
+	return UserHandler{userService: userService, tokenSecret: tokenSecret}
 }
 
 // register
@@ -80,9 +83,27 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
+	token, err := auth.GenerateToken(user.ID, user.Username, user.Fullname, h.tokenSecret, 24*time.Hour)
+	if err != nil {
+		log.Printf("Generate access token: %v", err)
+		writeError(c, http.StatusInternalServerError, "could not create access token")
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"message": "login successfully",
-		"user":    user,
+		"message":      "login successfully",
+		"user":         user,
+		"access_token": token,
+	})
+}
+
+func (h *UserHandler) Me(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"user": gin.H{
+			"id":       auth.UserID(c),
+			"username": auth.Username(c),
+			"fullname": auth.Fullname(c),
+		},
 	})
 }
 
